@@ -1,0 +1,61 @@
+<script>
+exports = {};
+</script>
+<script src="index.js"></script>
+<script>
+AjaxInterceptor = exports;
+AjaxInterceptor.wire()
+</script>
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous">
+</script>
+
+
+<div>
+  <button id='firerequest'>Fire</button>
+  <button id='wire'>Wire</button>
+  <button id='unwire'>Unwire</button>
+
+</div>
+
+<script>
+
+
+// Setup some callbacks
+AjaxInterceptor.addRequestCallback(function(xhr) {
+  alert("request",xhr);
+});
+AjaxInterceptor.addResponseCallback(function(xhr) {
+  alert("response",xhr);
+});
+
+$('#wire').click(function() {
+  // Will proxify XHR to fire the above callbacks
+  console.log('wire');
+  if(!AjaxInterceptor.isWired()){
+    AjaxInterceptor.wire();
+  }
+});
+
+// Do some requests
+// ................
+var i = 0;
+$("#firerequest").click(function(){
+  console.log('sup');
+  $.get("/index.js?v=" + ++i, function(data, status){
+    //console.log("Data: " + data + "\nStatus: " + status);
+    console.log('status', status);
+  });
+});
+
+$('#unwire').click(function() {
+  // Will restore XHR and not fire anymore the callbacks
+  console.log('unwire');
+  if(AjaxInterceptor.isWired()){
+    AjaxInterceptor.unwire();
+  }
+});
+</script>
